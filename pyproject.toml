@@ -1,0 +1,42 @@
+[project]
+name = "librarium"
+version = "0.1.0"
+description = "Retrieval that feeds language models well: contextual chunking, BM25+embedding RRF retrieval, K-line answer caching"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Don Tolley", email = "tolleybot@gmail.com" }]
+dependencies = [
+    "numpy>=1.24",
+    "rank-bm25>=0.2",
+    "nltk>=3.8",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+# einops is not sentence-transformers' dependency, it is the default
+# embed_model's: nomic-embed-text-v1.5 is loaded with trust_remote_code
+# and its remote modeling file imports einops. Without it the extra
+# installs cleanly and yields BM25-only retrieval, which is the failure
+# this pin exists to prevent. A different embed_model may not need it;
+# it stays declared here because the default is what a plain
+# `pip install '.[embeddings]'` gets. The floor is a conservative
+# recency bound in the style of the other extras', not a requirement of
+# any one symbol: nomic imports only `rearrange` and `repeat`, both of
+# which predate 0.7 by years, so nothing here justifies raising it.
+embeddings = ["sentence-transformers>=2.5", "einops>=0.7"]
+web = ["httpx>=0.27", "beautifulsoup4>=4.12", "trafilatura>=1.8"]
+llm = ["httpx>=0.27"]
+all = ["librarium[embeddings,web,llm]"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24", "httpx>=0.27"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
