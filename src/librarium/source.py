@@ -83,7 +83,7 @@ RERANK_POOL: int | None = None
 # RAGLite scores on the same corpus. Each model was given its OWN prompt
 # convention; measuring bge-m3 under nomic's prefixes reads 71.8%, so 3.8
 # of that gap is prompting rather than weights (evidence:
-# `benchmarks/README.md`).
+# internal benchmark runs).
 #
 # bge-m3 needs no `trust_remote_code` and imports no einops, so the
 # `embeddings` extra's einops dependency is now only for a librarian that
@@ -137,7 +137,7 @@ RERANK_MODEL = "BAAI/bge-reranker-v2-m3"
 # the next query and cannot stale an index.
 # bge-m3, pinned to the revision the 75.6% was measured on rather than to
 # whatever its default branch holds later (evidence:
-# `benchmarks/README.md`). Written as one paragraph with the block above
+# internal benchmark runs). Written as one paragraph with the block above
 # it, which is why the citation sits here.
 # Leaving the default model
 # unpinned was the first version of this change and it was wrong: the pin
@@ -155,10 +155,10 @@ RERANK_REVISION = "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
 # older revision and reading back which snapshot each file landed in.
 # Every claim in this block is re-runnable, and has to be, because a
 # sentence-transformers release or one commit to nomic's modeling file
-# turns any of them over without touching this repo (evidence:
-# benchmarks/pin_evidence.py — needs network and the `embeddings` extra,
-# which is why it is a script and not a test; tests/test_pinning.py holds
-# the offline half, that the revisions reach the loader at all):
+# turns any of them over without touching this repo (evidence: an internal
+# benchmark script that needs network and the `embeddings` extra, which is
+# why it is not a test; tests/test_pinning.py holds the offline half, that
+# the revisions reach the loader at all):
 #
 #   config.json, tokenizer*, modules.json, sentence_bert_config.json
 #       pinned. This is not nothing — config.json is where `auto_map`
@@ -230,8 +230,7 @@ EMBED_CODE_REVISION = "7710840340a098cfb869c4f65e87cf2b1b70caca"
 # measured at +0.0 there. The magnitude varies because each run generates
 # fresh prefixes — a flat control proves the two arms are comparable to each
 # other, not that one run is comparable to the next
-# (evidence: `benchmarks/retrieval_arms.py --embed-source text prefixed`
-# re-runs it, and `benchmarks/README.md` carries all three runs, the
+# (evidence: internal benchmark runs, which carry all three runs, the
 # per-suite split and why an uncontrolled run is void).
 #
 # **A constant and not a per-librarian setting**, unlike the geometry
@@ -272,7 +271,7 @@ EMBED_PROBE = "search_document: librarium embedding weight fingerprint probe"
 # unit vector is a worst case, not a description — measured, the default
 # model's probe vector has norm ~20.5 (it loads with no normalising
 # step), which puts the real perturbation ~20x lower still at ~7e-7
-# relative, ~2e-13 of cosine. See benchmarks/fingerprint_real_model.py.
+# relative, ~2e-13 of cosine (evidence: internal benchmark runs).
 EMBED_FINGERPRINT_DIGITS = 6
 
 # Cosine *distance* (1 - cos) above which two probe vectors are called
@@ -285,7 +284,7 @@ EMBED_FINGERPRINT_DIGITS = 6
 #
 # Cosine is the forgiving direction, which is what makes this workable,
 # and the size of that forgiveness is now measured rather than argued —
-# benchmarks/fingerprint_tolerance.py, the default model on 2026-08-10,
+# an internal benchmark run, the default model on 2026-08-10,
 # macOS arm64 / torch 2.13, one load per device and dtype and every
 # pairing through `fingerprint_drift`:
 #
@@ -297,8 +296,7 @@ EMBED_FINGERPRINT_DIGITS = 6
 # So the case this constant exists to survive — the same weights on a
 # different device — clears it by eight orders of magnitude, and the
 # analytic ~d²/2 estimate that sized it was right about fp32 and
-# pessimistic about fp16 (evidence: benchmarks/fingerprint_tolerance.py,
-# the run tabulated above). `cuda` was not measurable on that machine and
+# pessimistic about fp16 (evidence: the run tabulated above). `cuda` was not measurable on that machine and
 # nothing here has been observed about it. The thin one is bfloat16,
 # inside by a factor of 1.2 rather than by orders: unreachable today
 # because `_ensure_embed_model` selects no dtype, but a dtype knob would
@@ -313,8 +311,7 @@ EMBED_FINGERPRINT_DIGITS = 6
 # large enough to clear 1e-4 is reported as drift, and the warning says
 # so in as many words. That is the survivable failure — it costs a
 # re-index of vectors that are, by then, measurably not the ones a query
-# would produce (evidence: benchmarks/fingerprint_tolerance.py again —
-# "measurably" here means at the scale tabulated there, not merely in
+# would produce (evidence: the same run — "measurably" here means at the scale tabulated there, not merely in
 # principle). The false negative is the one this whole change exists
 # to prevent, and it has a floor: a difference too small to clear 1e-4 is
 # by construction too small to move a cosine ranking either, because it
@@ -416,7 +413,7 @@ DOC_SUMMARY_SYSTEM = (
 #: **69 distinct labels over 176 documents, 50 of them used once**, so a
 #: renters policy came back as "tenant policy" and a query for "renters
 #: policy" matched nothing. High coverage hid it completely (evidence:
-#: `benchmarks/field_extraction.py`, `benchmarks/README.md`).
+#: internal benchmark runs).
 #:
 #: Written from what personal paperwork *is*, deliberately not derived
 #: from the benchmark corpus — a vocabulary read off the fixture would
@@ -469,7 +466,7 @@ DOC_FIELDS_SYSTEM = (
     # Measured cause of four of nine wrong dates in fields-1: the model
     # read a `**Date:**` header out of a nested reply inside an email
     # thread and returned it as the document's own (evidence:
-    # `benchmarks/README.md`).
+    # internal benchmark runs).
     "In an email thread, use only the thread's own newest message. "
     "Lines beginning with \">\" are older messages being quoted — never "
     "take a value from them.\n"
@@ -491,8 +488,7 @@ DOC_FIELDS_SYSTEM = (
 #: and a model that ignores a named defect twice will ignore it a third
 #: time. The re-ask is a repair request, never a "are you sure" — that
 #: question is what `_find_gap` asks, and it is measured answering
-#: SUFFICIENT (evidence: `benchmarks/refine_loop.py`,
-#: `benchmarks/README.md`).
+#: SUFFICIENT (evidence: internal benchmark runs).
 DOC_FIELDS_REASK = 1
 
 # The keys `parse_fields` keeps. Anything else the model volunteers is
@@ -586,7 +582,7 @@ DOC_FIELDS_VERSION = f"fields-4:{_fields_fingerprint()}"
 #: 1,378-character chunk, a signal-to-container ratio of 0.0055 that no
 #: ranking knob touches. A fact is ~154 characters, so the same answer
 #: arrives in a container it dominates rather than one it hides in
-#: (evidence: `benchmarks/fact_retrieval.py`, `benchmarks/README.md`).
+#: (evidence: internal benchmark runs).
 #:
 #: The *attribute* is the half that earns the call. A plain regex over the
 #: same chunks captures 208 of 209 expected literals, so extracting a
@@ -624,7 +620,7 @@ MAX_FACT_QUOTE_CHARS = 600
 #: Most facts kept from one chunk. Measured at 13.5 per chunk on the
 #: benchmark corpus with a maximum in the thirties, so this bounds a
 #: pathological reply rather than trimming a normal one (evidence:
-#: `benchmarks/fact_store.py`, `benchmarks/README.md`).
+#: internal benchmark runs).
 MAX_FACTS_PER_CHUNK = 60
 
 
@@ -658,7 +654,7 @@ EXTRACT_FACTS = False
 
 #: What share of a retrieval's slots go to facts when a fact store exists.
 #: 0.5 is what measured best; 0.0 disables the mix without discarding the
-#: store (evidence: `benchmarks/fact_retrieval.py`).
+#: store (evidence: internal benchmark runs).
 FACT_MIX = 0.5
 
 
@@ -726,7 +722,7 @@ EXPANSION_SYSTEM = (
 #: hyde's length in the asker's own words gained **exactly nothing** —
 #: 43.8% against off's 43.8% — while hyde reached 75.0%. More words in
 #: the query buys nothing; the document's vocabulary buys everything
-#: (evidence: `benchmarks/query_expansion.py`, `benchmarks/README.md`).
+#: (evidence: internal benchmark runs).
 #:
 #: What it does not fix is `near_duplicate` (+0.0 and -2.6 across the two
 #: runs) or `versioning` (negative in both). Those need document
@@ -1155,7 +1151,7 @@ def _normalize_ws(text: str) -> str:
     Markdown emphasis goes for the same reason and it is the more
     important half: **measured, requiring it byte-identical cost more
     than half of every field this extracts** (evidence:
-    ``benchmarks/README.md``). These documents write
+    internal benchmark runs). These documents write
     ``**Issued By:** Pinnacle Meridian`` and the model faithfully quotes
     ``Issued By: Pinnacle Meridian``; the first version of this check
     called that absent from the document and rejected it, taking
@@ -1167,7 +1163,7 @@ def _normalize_ws(text: str) -> str:
     own normalised quote, and markup here. **Any comparison between text
     a model wrote and text a human wrote needs an explicit decision about
     what counts as the same**, and the default of byte-identity is
-    reliably the wrong one (evidence: ``benchmarks/README.md``).
+    reliably the wrong one (evidence: internal benchmark runs).
     """
     return " ".join(_MARKUP_RE.sub("", text).split())
 
@@ -1187,18 +1183,16 @@ def verify_fields(
     ``SUFFICIENT`` promotes 9 questions to complete coverage, 5 of them
     on replies the parser threw away. Asking a model to judge gets
     agreement; asking a string whether it is present in another string
-    gets a fact (evidence: ``benchmarks/refine_loop.py``,
-    ``benchmarks/README.md``).
+    gets a fact (evidence: internal benchmark runs).
 
     Four checks, and each maps to a failure mode measured in ``fields-1``
-    (evidence: ``benchmarks/field_extraction.py``,
-    ``benchmarks/README.md``):
+    (evidence: internal benchmark runs):
 
     * **The quote must be in the document.** Two of nine wrong dates were
       values the model assembled rather than read — ``2024-08-12`` from
       the prose "Notice filed August 12", which states no year. A value
       can be fabricated silently; a quote supporting it cannot (evidence:
-      ``benchmarks/README.md``).
+      internal benchmark runs).
     * **The value must be inside its own quote.** Catches the quote that
       is real but does not contain what it is offered as evidence for —
       ``2019`` lifted out of "a board guideline adopted in 2019", where
@@ -1217,7 +1211,7 @@ def verify_fields(
     asked for evidence and gave none, which is weaker than evidence that
     failed — but ``fields-1`` measured issuer at 158/161 present verbatim,
     so unquoted values are mostly right and dropping them would cost the
-    strongest field this extracts (evidence: ``benchmarks/README.md``).
+    strongest field this extracts (evidence: internal benchmark runs).
     """
     haystack = _normalize_ws(document)
     kept: dict[str, dict] = {}
@@ -1413,8 +1407,7 @@ def fact_text(fact: dict[str, str]) -> str:
     value is the payload; the quote keeps the document's own wording so a
     lexical match on the original phrasing still lands. This exact string
     is what was measured — one field rather than several — so it is the
-    shape the recorded numbers describe (evidence:
-    `benchmarks/fact_retrieval.py`, `benchmarks/README.md`).
+    shape the recorded numbers describe (evidence: internal benchmark runs).
     """
     head = " — ".join(p for p in (fact.get("subject"), fact.get("attribute")) if p)
     line = f"{head}: {fact.get('value', '')}" if head else fact.get("value", "")
@@ -1563,7 +1556,7 @@ def embedding_backend_available() -> bool:
 #: that model prompts it does not use. Measured on the 194-document
 #: corpus, bge-m3 scored 71.8% under nomic's prefixes and **75.6% under
 #: its own** — 3.8 points, larger than the gain from changing model at
-#: all (evidence: `benchmarks/README.md`).
+#: all (evidence: internal benchmark runs).
 #:
 #: A name that is not here gets no prefix, which is what most models
 #: want and is the safe default: an unwanted prefix costs recall, a
@@ -1816,8 +1809,8 @@ class LoopHandoverError(IndexBusyError):
 
     Both halves of that are measured. The one-loop mechanism is
     ``TestTheCorruptionTheRefusalPrevents::test_shape_1_load_strands_the_in_flight_documents_chunks``,
-    and ``mutation_registry.py --only remove-refusal`` says this refusal is
-    load-bearing (16 tests). The **cross-loop** instance — an ``index()``
+    and an internal mutation run found this refusal load-bearing (16
+    tests). The **cross-loop** instance — an ``index()``
     on the new loop resetting while the old loop's add is still parked, and
     then that add resuming — is ``TestWhatProceedingWouldCost``: 24 chunks
     for a document ``documents`` no longer names, ``ODD_MARK`` gone from
@@ -1887,8 +1880,7 @@ def embed_fingerprint(model: object) -> dict | None:
     free when it is obtainable. It is not obtainable here: the default
     model's weights are fetched revision-blind by its own remote code
     (``cached_file(model_name, WEIGHTS_NAME)``, measured — see
-    ``EMBED_REVISION``, and benchmarks/pin_evidence.py for the run behind
-    it), so the snapshot the HF cache could report is the
+    ``EMBED_REVISION``), so the snapshot the HF cache could report is the
     *config's*, and it stays put across exactly the upstream weight
     change this is meant to catch. Reaching into cache internals for an
     answer about the wrong file is worse than not asking. A fingerprint
@@ -2188,7 +2180,7 @@ def check_expansion_settings(
         ),
         # Rejected rather than defaulted: a typo silently falling back to
         # a style measured negative is the shape of bug this module keeps
-        # finding (evidence: `benchmarks/README.md`).
+        # finding (evidence: internal benchmark runs).
         "expansion_style": _check_choice(
             expansion_style, "expansion_style", ("hyde", "paraphrase")
         ),
@@ -2742,9 +2734,8 @@ class SourceLibrarian:
         """Which retrieval path a query will actually take.
 
         ``"hybrid"`` — BM25 + embeddings, RRF-fused. The configuration
-        the published benchmark numbers were measured on (evidence:
-        benchmarks/README.md, which records the date, the model and the
-        three suites those numbers came from).
+        the project's benchmark numbers were measured on (evidence:
+        internal benchmark runs).
         ``"bm25-only"`` — keyword search alone; the embedding half is
         unavailable.
         ``"whole-document"`` — short input, no retrieval, everything
@@ -2782,8 +2773,7 @@ class SourceLibrarian:
         :attr:`retrieval_mode`. Expansion is orthogonal to the
         lexical/dense axis, and "hybrid+expanded" would break every
         ``retrieval_mode == "hybrid"`` comparison already written against
-        the four documented strings — including the one in this
-        project's own README.
+        the four documented strings.
         """
         if not self.expansion_enabled:
             return "off"
@@ -3044,9 +3034,8 @@ class SourceLibrarian:
             # but `add_document`, single-threaded: one document ends up
             # with 96 chunks instead of 48, no exception raised (evidence:
             # `TestAClaimHeldByAnAbandonedOpenLoop`, whose two tests reach
-            # it only with `without_the_handover_refusal` installed, and
-            # `mutation_registry.py --only ignore-claim` for the refusal
-            # half that now stands in front of it).
+            # it only with `without_the_handover_refusal` installed; the
+            # refusal half now stands in front of it).
             #
             # The condition is a backstop rather than the thing doing the
             # work: a claim held by a *live* loop is one of the three
@@ -4375,8 +4364,8 @@ class SourceLibrarian:
             # EMBED_FINGERPRINT_TOLERANCE comfortable. Adding a dtype knob
             # here is not free — the worst reduced-precision pairing measured,
             # cpu/bfloat16 vs mps/float16, is 8.155e-05, only 1.23x inside
-            # that tolerance, so re-measure with
-            # benchmarks/fingerprint_tolerance.py before one lands.
+            # that tolerance, so re-measure the tolerance before one
+            # lands.
             self.embed_model = SentenceTransformer(
                 self.embed_model_name,
                 # Only for models that ship remote code. bge-m3 is a plain
@@ -4394,7 +4383,7 @@ class SourceLibrarian:
             logger.error(
                 "  LIBRARIAN embedding model %s is installed but failed to "
                 "load (%s: %s) — dense retrieval is NOT active, retrieval "
-                "quality will be below the documented benchmark",
+                "quality will be lower than with hybrid retrieval",
                 self.embed_model_name, type(e).__name__, e,
             )
             if self.strict:
@@ -4407,9 +4396,8 @@ class SourceLibrarian:
         # comparing it against them checks nothing and would report drift
         # from a repo it never loads. This was `== EMBED_MODEL` and became
         # wrong the moment the default moved off nomic — the same
-        # closed-assumption failure CLAUDE.md's Conventions section
-        # describes, where a condition true when written silently stops
-        # describing what it meant.
+        # closed-assumption failure: a condition true when written
+        # silently stops describing what it meant.
         if self.embed_model_name.startswith("nomic-ai/"):
             _check_code_revision(
                 self.embed_model,
@@ -4718,8 +4706,7 @@ class SourceLibrarian:
             # material and the per-chunk LLM call that wrote the prefix
             # pays for both. No extra call — the prefix is already on the
             # chunk. `EMBED_SOURCE` is the constant that puts this choice
-            # in `content_hash` and carries the numbers;
-            # benchmarks/retrieval_arms.py is what produced them.
+            # in `content_hash` and carries the numbers.
             vectors = np.asarray(model.encode(
                 [f"{embed_prompts(self.embed_model_name)[0]}{c.prefixed}"
                  for c in pending],
@@ -5581,7 +5568,7 @@ class SourceLibrarian:
         the first page, **seven are recovered by paging** — four on page
         two, three deeper — and they are the categories that hurt:
         `vocab_mismatch` four of five, `versioning` two of two (evidence:
-        `benchmarks/README.md`).
+        internal benchmark runs).
 
         This is the cheap half of "look again": no LLM call and no
         ``await``, so the contract below is untouched. The other half is
@@ -5821,8 +5808,7 @@ class SourceLibrarian:
         against a chunk arm handed *more* characters, the mix is +2.4 to
         +3.5, with `versioning` — the category that fixture declares
         unanswerable — going 61.5% to 94.9% and identical across every
-        cell of a noise 2x2 (evidence: `benchmarks/fact_retrieval.py`,
-        `benchmarks/README.md`).
+        cell of a noise 2x2 (evidence: internal benchmark runs).
 
         Facts are returned as `Chunk`s so that every existing consumer —
         `ask`, `facts`, `check_context`, `chunk_header`, a caller's own
@@ -5847,8 +5833,7 @@ class SourceLibrarian:
         # that returned `top_k` chunks plus facts on top would be a wider
         # retrieval wearing a mix's name, and the run this rests on held
         # the character budget equal — the chunk arm it beats was handed
-        # *more* characters, not fewer (evidence:
-        # `benchmarks/fact_retrieval.py`, `benchmarks/README.md`).
+        # *more* characters, not fewer (evidence: internal benchmark runs).
         keep = max(0, top_k - len(picked))
         out: list[Chunk] = list(chunks[:keep])
         for i in picked:
@@ -6076,8 +6061,8 @@ class SourceLibrarian:
         # not an argument to: what the document side was missing was
         # *content* the lexical half already had, and a question has no
         # parent document to be situated in. Nothing measured supports
-        # touching it: benchmarks/retrieval_arms.py varied the document
-        # input only, so there is no query-side arm to point at.
+        # touching it: the benchmark runs varied the document input
+        # only, so there is no query-side arm to point at.
         try:
             q_emb = model.encode(
                 [f"{embed_prompts(self.embed_model_name)[1]}{question}"],

@@ -4,7 +4,7 @@ The other half of "model-free" lives here too. `MockLLM` covers the
 *language* model; nothing covered the two `sentence_transformers` models
 until now, and the suite quietly built 21 of them per run (16
 `nomic-ai/nomic-embed-text-v1.5`, 5 `BAAI/bge-reranker-v2-m3`) while
-CLAUDE.md said it built none. On this machine they are cached and the
+the project's notes said it built none. On this machine they are cached and the
 extra is installed, so the cost was invisible; on a clean core install it
 is multiple GB over the network from a suite documented as needing none.
 
@@ -174,7 +174,7 @@ class _RealModelGuard:
             raise ModelFreeViolation(
                 f"{class_name}({model_name!r}) — a real model would have "
                 "been downloaded and built here. The suite is model-free "
-                "(CLAUDE.md); supply a double with "
+                "(see tests/conftest.py); supply a double with "
                 "tests.conftest.stub_models(monkeypatch, ...) instead."
             )
         return refuse
@@ -218,7 +218,7 @@ def _model_free_suite():
 class WordHashEmbedder:
     """A `SentenceTransformer` stand-in whose vectors carry their text.
 
-    Content-derived, per CLAUDE.md: each word lands on an axis picked by
+    Content-derived, per the suite's convention: each word lands on an axis picked by
     a hash of the word, with a magnitude drawn from the same digest, so
     two different chunks embed differently and by different amounts. A
     constant or length-derived vector would make every dense ranking a

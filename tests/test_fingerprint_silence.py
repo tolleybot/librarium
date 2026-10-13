@@ -11,7 +11,7 @@ Part A below pins the report: level, count, which reason fired, and the
 two load-time cases being told apart. Part C pins ``_load_reranker``'s
 two failure branches, which no test had ever run.
 
-Offline and model-free, per CLAUDE.md. The doubles are content-derived:
+Offline and model-free. The doubles are content-derived:
 :class:`MarkerCountEmbedder` is degenerate on the probe *because of what
 it is* — it scores marker words, and ``EMBED_PROBE`` contains none — not
 because it returns a constant, and the same is true of the non-finite and
@@ -29,8 +29,7 @@ double that fingerprints is a different double (it activates the drift
 comparison in tests that are not about drift), and ``WeightedEmbedder`` in
 ``test_stale_vectors.py`` already carries that property for the tests that
 need it. What is *not* safe is a future assertion that no warning is
-emitted across an ``add_document`` with a stub embedder; that is what the
-note in CLAUDE.md's testing section now says, and
+emitted across an ``add_document`` with a stub embedder, and
 :class:`TestItIsSaidOncePerModel` is what keeps the count at one.
 """
 

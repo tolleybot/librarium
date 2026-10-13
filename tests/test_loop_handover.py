@@ -32,8 +32,8 @@ refused.
 * :class:`TestWhatEachHoldingIsWorth` — the mutation check. The count is
   reachable alone through the API and its check is load-bearing; the claim
   and the owner are not, and are isolated by hand.
-* :class:`TestOnlyTheRefusalKeepsTheRebuiltEventClosed` — `CLAUDE.md`'s
-  second recorded limit, made a guarded invariant: `_replace_lock` and
+* :class:`TestOnlyTheRefusalKeepsTheRebuiltEventClosed` — a recorded
+  limit, made a guarded invariant: `_replace_lock` and
   `_adds_idle` are rebuilt per handover, and only this refusal keeps a loop
   from being re-adopted while an add parked on it still holds the `Event` its
   drain would no longer be watching.
@@ -172,7 +172,7 @@ def run_in_a_subprocess(
 
     Runs `sys.executable` and relies on the editable install resolving,
     like the subprocess tests in `test_degradation.py`. Do not add
-    PYTHONPATH=src (see CLAUDE.md) — but the repository root does have to
+    PYTHONPATH=src — it masks a broken install — but the repository root does have to
     be importable for `tests.*`, so it is passed as an argument rather
     than assumed.
     """
@@ -1277,9 +1277,9 @@ class TestWhatEachHoldingIsWorth:
 
 
 class TestOnlyTheRefusalKeepsTheRebuiltEventClosed:
-    """`CLAUDE.md`'s second recorded limit, turned into a guarded invariant.
+    """A recorded limit, turned into a guarded invariant.
 
-    That paragraph says `_replace_lock` and `_adds_idle` are **rebuilt** per
+    The limit is that `_replace_lock` and `_adds_idle` are **rebuilt** per
     handover rather than kept per loop, and that re-adopting a loop which
     still holds registrations of its own would hand its drain a fresh
     `Event` while the add parked over there sets the old one — with **only

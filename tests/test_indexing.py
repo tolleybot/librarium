@@ -887,8 +887,7 @@ class TestWhatReachesTheEncoder:
     embedded with no idea which rate. Measured three times on one index with
     the prefixes held constant, each against a flat `bm25-only` control:
     recall at 10 rose in all three and more of the expected literals were
-    found in all three (evidence: `benchmarks/retrieval_arms.py` re-runs it,
-    and `benchmarks/README.md` carries the runs and the per-suite split).
+    found in all three (evidence: internal benchmark runs).
     The magnitude is deliberately not quoted here — each run resamples
     prefixes, so `@1`, `@3` and `@5` changed sign between runs and only the
     `@10` direction and the literal count reproduced.
@@ -933,8 +932,7 @@ class TestWhatReachesTheEncoder:
         **The fingerprint probe is separated out rather than skipped**, and
         it is why this helper exists. `embed_fingerprint` encodes
         `EMBED_PROBE` once per model object, so a double that records its
-        batches sees one call that is not a chunk — `CLAUDE.md`'s testing
-        notes say so, and reading the batches as if they were all chunks
+        batches sees one call that is not a chunk, and reading the batches as if they were all chunks
         misaligns every later row by one. Asserting the probe is exactly
         what is expected pins that documented extra call instead of
         quietly dropping whatever does not fit.

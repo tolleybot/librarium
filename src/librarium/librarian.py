@@ -252,7 +252,7 @@ class Librarian:
     def retrieval_mode(self) -> str:
         """``hybrid`` | ``bm25-only`` | ``whole-document`` | ``unindexed``.
 
-        The benchmark numbers in the README were measured on
+        The project's benchmark numbers were measured on
         ``hybrid``. Check this at runtime rather than assuming the
         embedding half loaded.
         """

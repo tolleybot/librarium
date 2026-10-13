@@ -57,7 +57,7 @@ READ_NOT_RETURNED = frozenset({"top_k", "use_reranker", "warn"})
 #:
 #: It was a hand-maintained dict of nine name/default pairs, and it went
 #: stale the moment `rerank_pool` was added — a closed enumeration in the
-#: sense `CLAUDE.md`'s Conventions rule forbids: nothing in it was untrue,
+#: sense that matters here: nothing in it was untrue,
 #: nobody had to edit it for it to go wrong, and the set simply grew. It
 #: failed loudly rather than silently, which is better than the enumerations
 #: that rule was written for, but the fix is the one the rule names: point at
@@ -292,9 +292,8 @@ class TestRerankPool:
     not.** Measured on one index with a flat control, `recall@10` went *down*
     (−0.5 at pool 30, −1.6 at pool 50) and facts found fell, while `@5` rose
     and mean rank improved — the cross-encoder orders better over a slightly
-    worse set (evidence: `benchmarks/retrieval_arms.py --rerank-pool` re-runs
-    it and `benchmarks/README.md` carries the run and says plainly that
-    nothing measured recommends setting this). The knob ships defaulting off,
+    worse set, and nothing measured recommends setting this (evidence:
+    internal benchmark runs). The knob ships defaulting off,
     so what these tests defend is the *mechanism* and the default, not a
     benefit.
 
@@ -770,8 +769,7 @@ class TestForwarding:
     #: from the default, and the first knob with an upper bound or a fixed
     #: set of allowed strings would make a "default + 1" rule produce
     #: invalid probes and fail this test for a reason that has nothing to do
-    #: with forwarding. `.review/untested.md` carries the analysis so the
-    #: next person does not redo it.
+    #: with forwarding.
     #:
     #: So the obligation travels with the list: **a knob added to
     #: `check_index_settings` is added here in the same commit.**

@@ -1,6 +1,6 @@
 """The suite is model-free, and stays model-free.
 
-CLAUDE.md has said "no model, no network, no API key" since the project
+The project has said "no model, no network, no API key" since it
 started, and for five cycles it was false: a full run built **21 real
 models** — 16 ``nomic-ai/nomic-embed-text-v1.5`` and 5
 ``BAAI/bge-reranker-v2-m3``. None of them was used for anything. The
@@ -375,7 +375,7 @@ class TestTheGuardChangesNothingElse:
 
 
 class TestTheDoublesAreContentDerived:
-    """CLAUDE.md's rule for test doubles, applied to the one this cycle
+    """The suite's rule for test doubles, applied to the one this cycle
     added: a constant vector would let a test pass with the dense half
     ranking on nothing."""
 

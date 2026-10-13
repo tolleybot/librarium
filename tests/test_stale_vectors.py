@@ -12,7 +12,7 @@ vectors, and the comparison happens wherever the model actually loads.
 That placement is forced — ``_load_if_current`` hashes before any model
 exists, so ``content_hash()`` structurally cannot carry this.
 
-Everything here is offline and model-free, per CLAUDE.md.
+Everything here is offline and model-free.
 :class:`WeightedEmbedder` is content-derived *and* identity-carrying: the
 vector is a function of the words in the text, so a vector filed against
 the wrong chunk ranks differently, and the ``weights`` name is mixed into

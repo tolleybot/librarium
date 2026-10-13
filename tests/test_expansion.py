@@ -10,7 +10,7 @@ because the API is:
   unless ``strict``.
 * ``retrieve_expanded()`` is the composition of the two and nothing else.
 
-The doubles are content-derived, per CLAUDE.md: :class:`ExpansionLLM`
+The doubles are content-derived: :class:`ExpansionLLM`
 rewrites the question *it was actually given* through a vocabulary table
 and takes its line count from the prompt it was actually sent, so a
 misrouted question or an ignored ``expansion_variants`` fails an
@@ -404,11 +404,11 @@ class TestScoredTruncation:
         assert len(lib._whole_documents()) == 8
 
     async def test_a_bm25_index_behind_the_chunks_skips_the_variants_too(self):
-        # The staleness guard CLAUDE.md calls live rather than defensive,
+        # The staleness guard, which is live rather than defensive,
         # crossed with the new argument. Catches `also=` changing what
         # the degraded path returns — a future "the lexical half is
         # stale, so at least rank the variants" would hand back chunks
-        # here instead of whole documents, and CLAUDE.md's stated
+        # here instead of whole documents, and the documented
         # consequence (ask() raising from check_context in this window)
         # would quietly stop being true.
         #
@@ -454,7 +454,7 @@ class TestTheShortfallIsLexicalOnly:
     fewer than ``top_k``.
     """
 
-    #: Content-derived, per CLAUDE.md: each text embeds as the counts of
+    #: Content-derived: each text embeds as the counts of
     #: marker words it actually contains, spread across the corpus, so a
     #: chunk embedded from the wrong text scores differently.
     MARKERS = ("bakery", "car", "policy", "badge", "payroll", "travel",

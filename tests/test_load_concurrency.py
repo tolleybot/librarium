@@ -17,7 +17,7 @@ wrong question — `index()` loads and saves from inside its own hold.
 Determinism: every race here is sequenced by `GatedLLM`, which parks one
 named document's *summary* call on an Event and releases it on command —
 no sleeps, no clock. `WatchfulLLM.gate_at` is deliberately not used: it is
-single-shot (CLAUDE.md's testing notes), so it cannot sequence the
+single-shot, so it cannot sequence the
 two-document cases below, and none of these tests are about peak
 concurrency anyway. Where the ordering of a *task* matters rather than of
 an LLM call — `index()` having reached its wait before the add is let go —

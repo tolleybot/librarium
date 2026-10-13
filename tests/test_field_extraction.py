@@ -18,7 +18,7 @@ Four separable things are pinned here:
 
 Nothing here filters on the fields, because nothing can yet.
 
-The double is content-derived per CLAUDE.md: :class:`FieldsLLM` quotes out
+The double is content-derived: :class:`FieldsLLM` quotes out
 of the document it was actually handed, so a misrouted sample produces a
 quote that fails verification rather than something plausible.
 """
@@ -93,7 +93,7 @@ class FieldsLLM:
     The field reply quotes the issuer line out of the document it was
     actually sent, so a librarian that hands the extraction call the wrong
     sample produces a quote that is not in that document and fails
-    verification — the identity-carrying property CLAUDE.md asks of every
+    verification — the identity-carrying property the suite asks of every
     double here.
     """
 
