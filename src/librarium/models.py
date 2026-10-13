@@ -21,10 +21,9 @@ class Chunk(BaseModel):
     with the prefixes held constant so only the encoder input varied and
     each against a flat ``bm25-only`` control: recall at 10 rose in all
     three runs and more of the expected literals were found in all three.
-    Pollution is the effect that did **not** show up; see
-    ``benchmarks/README.md`` for the runs, the per-suite split and the one
-    suite that lost ground, and ``EMBED_SOURCE`` in ``source.py`` for what
-    puts the choice in the cache key. Recorded rather than quietly
+    Pollution is the effect that did **not** show up in internal
+    benchmark runs; see ``EMBED_SOURCE`` in ``source.py`` for what puts
+    the choice in the cache key. Recorded rather than quietly
     deleted, because a plausible claim that turned out backwards is worth
     more to the next reader than a clean sentence.
     """

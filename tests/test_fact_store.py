@@ -17,7 +17,7 @@ Five separable things are pinned here:
 * A rolled-back document takes its facts with it, or the store holds
   entries citing a ``doc_id`` the index no longer has.
 
-The double is content-derived per CLAUDE.md: :class:`FactsLLM` builds its
+The double is content-derived: :class:`FactsLLM` builds its
 facts out of the chunk text it was actually handed, so a misrouted chunk
 produces facts naming the wrong document rather than something plausible.
 """
@@ -407,7 +407,7 @@ class TestTheDenseHalfIsLive:
     `_build_fact_index` was handing `embed_prompts`' *tuple* a string key,
     catching the TypeError, logging it, and degrading to lexical — which
     is exactly the "a test built on one cannot tell a live dense half from
-    a dead one" trap CLAUDE.md names for the embedder doubles.
+    a dead one" trap that conftest names for the embedder doubles.
     """
 
     def _stocked(self, monkeypatch) -> SourceLibrarian:

@@ -24,7 +24,7 @@ ship is three things, and this file covers all three:
   against.
 
 **Nothing here loads a model or touches the network.** The doubles are
-content-derived per CLAUDE.md: a fake model carries the sha it was built
+content-derived: a fake model carries the sha it was built
 for *inside its module path*, exactly where transformers puts the real
 one, so a warning that reports the wrong sha fails an assertion rather
 than passing on a constant. The module path shape was taken from the

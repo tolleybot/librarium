@@ -19,7 +19,7 @@ install, where the ``embeddings`` extra is absent:
   both directions so both branches run whatever this machine has
   installed.
 
-:class:`ConceptEmbedder` is content-derived per CLAUDE.md, and carries
+:class:`ConceptEmbedder` is content-derived, and carries
 one property a marker-word counter does not: it maps *synonyms* onto a
 shared axis, so it bridges vocabulary the way a real embedding does. A
 double that only counted literal words could not tell the dense half

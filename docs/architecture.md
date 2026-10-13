@@ -7,15 +7,14 @@ an answer — or if you are about to change any of it.
 Nothing here is required to *use* librarium; the [README](../README.md)
 covers that. The numbers quoted below are the **defaults** — chunk
 geometry, `top_k`, the context budget and the model names are all
-constructor arguments (see the README on chunking and retrieval
-geometry), so a tuned librarian will differ.
+constructor arguments (see Configuration in the README), so a tuned librarian will differ.
 
 **Pointers into the source are names, not line numbers.** They used to be
 line numbers, and every one of them had drifted — `check_context` was cited
 at a line 1100 short of where it lives. A name a reader can grep survives an
 edit above it; a number silently starts pointing at something else, which is
-the `CLAUDE.md` rule about handles that move out from under a citation,
-applied to the one file in this repo whose whole job is pointing.
+why this file cites names rather than line numbers: its whole job is
+pointing.
 
 **Contents**
 
@@ -292,9 +291,9 @@ feature" branch, correctly — it cannot yet know, and the probe will warn
 when something first loads the model.
 
 The assumption underneath — a real encoder never answers a non-empty
-probe degenerately — is measured rather than asserted:
-`benchmarks/fingerprint_real_model.py` loads the default model exactly as
-`_ensure_embed_model` does and reports the numbers (2026-08-09: 768 dims,
+probe degenerately — is measured rather than asserted: an internal
+benchmark run loaded the default model exactly as
+`_ensure_embed_model` does and recorded the numbers (2026-08-09: 768 dims,
 probe norm 20.5, no non-finite components, and librarium silent). It is
 not in the suite, which is offline and model-free — and whose embedder
 doubles are themselves degenerate probes, which is precisely why the
@@ -378,7 +377,7 @@ Design notes on this path:
   retrieval aid that never reaches the answering prompt. The encoder used to
   get `c.text` on the argument that a prefix would pollute the vectors —
   which was never measured and did not survive being measured; see
-  `EMBED_SOURCE` in `source.py` and `benchmarks/README.md` for the runs.
+  `EMBED_SOURCE` in `source.py` for the runs.
 - **Summary and chunks commit together** (`_chunk_document`). A summary
   recorded before the prefix calls would survive a failure among them, and
   the document would sit in `documents` with a summary and zero chunks —
@@ -774,12 +773,13 @@ ends the loop *and* promotes coverage, per the note in the diagram above.
 search", which is what it costs when the loop continues and not what it costs
 when the loop stops.
 
-**The loop is measured, and off by default.** `benchmarks/README.md` has the
-run: two rounds bought +2.2 points of union recall for 2.6x the LLM calls,
+**The loop is measured, and off by default.** On the internal benchmark
+run, two rounds bought +2.2 points of union recall for 2.6x the LLM calls,
 four rounds bought nothing more than two, and the same chunk allowance spent
 on one wider retrieval beat the loop by 25.3 points. Measured at `top_k=4`
-per round on three documents, which is not the shipped `top_k=10`; the README
-says why that setting is not measurable on these fixtures.
+per round on three documents, which is not the shipped `top_k=10`: at that
+setting `top_k` times the round count exceeds the fixtures' chunk count, so
+the union would be the whole document.
 
 ## The router and the K-line cache
 
