@@ -90,14 +90,6 @@ for chunk in lib.retrieve("What is the net cash position?", top_k=5):
     print(f"{chunk.doc_id}@{chunk.offset}: {chunk.text[:80]}")
 ```
 
-**Paging.** If the first page missed, pass back what you have seen and
-get the next results:
-
-```python
-page = lib.retrieve(question)
-more = lib.retrieve(question, exclude={c.index for c in page})
-```
-
 **Query expansion** helps when the question and the document use
 different words, such as *car insurance* against *auto policy*. It is off
 by default and costs one LLM call per question. The default style,
@@ -122,6 +114,44 @@ lib.expansion_mode   # "off" | "on" | "inert"
 ```
 
 Pass `strict=True` to raise instead of degrading.
+
+### When the results miss
+
+If the first results do not hold what you were looking for, there are
+two ways to ask again. Neither makes an LLM call.
+
+**Ask for the next page** when you trust the question but the answer
+ranked lower. Pass back the chunks you have already seen:
+
+```python
+page = lib.retrieve(question)
+more = lib.retrieve(question, exclude={c.index for c in page})
+```
+
+This is usually worth trying. On the project's 194-document test corpus,
+7 of every 8 questions that found nothing on the first page found their
+answer by paging deeper.
+
+**Add a hint** when you know something about the answer, such as a term
+the document is likely to use. Each hint is ranked by keyword alongside
+the question, so use words the document would contain rather than
+rephrasing the question:
+
+```python
+more = lib.retrieve("What did the extended warranty cost?",
+                    also=["warranty plan", "protection plan price"])
+```
+
+The two combine, so you can page with a hint, and `top_k` applies to
+each call as usual.
+
+Two limits are worth knowing. Paging skips chunks but not facts from
+the fact store, which come back on every page. And when an answer is
+missing from the top 50 or so, more pages are rarely the remedy; a
+better hint is.
+
+For an automated version, `facts(question, refine=True)` asks the model
+what is missing from its answer and searches again for it.
 
 ## Several documents
 
